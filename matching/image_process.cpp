@@ -29,8 +29,3 @@ bool getImgInfo(const Mat & img, UTYPE * rows, UTYPE * cols, UTYPE * channels) {
 
 	return true;
 }
-
-
-unsigned char &at(Mat &img, UTYPE row, UTYPE col, UTYPE channel) {
-	return img.data[(img.cols * row + col)*img.channels() + channel];
-}

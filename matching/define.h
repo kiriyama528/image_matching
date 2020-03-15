@@ -6,3 +6,5 @@
 #define ALPHA 3
 
 typedef int UTYPE;
+
+#define at(mat, r, c, bgra) (mat.data[(r*mat.cols + c)*mat.channels() + bgra])

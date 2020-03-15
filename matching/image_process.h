@@ -25,12 +25,3 @@ bool readImage(const char * imgname, Mat & mat);
  **/
 bool getImgInfo(const Mat & img, UTYPE * rows, UTYPE * cols, UTYPE * channels);
 
-/**
- * @brief 画素値へのアクセス取得。setもgetもできる
- * @param img <IN> 画像行列
- * @param row <IN> 行番号 0~
- * @param col <IN> 列番号 0~
- * @param channel <IN> チャネル番号 0~
- * @return アクセス先。代入左辺で使用すれば[set]として、右辺で使用すれば[get]として利用できる
- **/
-unsigned char & at(Mat & img, UTYPE row, UTYPE col, UTYPE channel);
