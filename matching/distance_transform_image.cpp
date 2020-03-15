@@ -5,8 +5,10 @@
 #include "define.h"
 #include "distance_transform_image.h"
 
-void makeDistanceTransformImage(const cv::Mat &src, cv::Mat dst) {
+void makeDistanceTransformImage(cv::Mat &dst, const cv::Mat &src) {
 	UTYPE rows, cols, channels;
 	getImgInfo(src, &rows, &cols, &channels);
-	dst.create(rows, cols, CV_8UC1);
+	dst = cv::Mat::zeros(rows, cols, CV_8UC1);
+
+	// TODO À‘•‚ğì‚êB¡‚ÍRED
 }
