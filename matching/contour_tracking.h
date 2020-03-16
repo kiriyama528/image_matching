@@ -28,6 +28,12 @@ public:
 	 **/
 	bool rasterScanForFirstValid(int & dst_r, int & dst_c, const cv::Mat & bi_img, int start_row, int start_col);
 
+	// 方向先の画素値を取得する
+	unsigned char getPixByDirection(const cv::Mat & bi_img, int r, int c, DIRECTION to);
+
+	// 周囲の 0 でない画素を見つける
+	void searchValidPixAround(const cv::Mat & bi_img, int r, int c, DIRECTION from, bool is_8_neighborhood);
+
 	/**
 	 * @brief 再帰的に追跡を行うコア部分。called by run()。外部から直接呼び出すことはない予定
 	 * TODO protected に移動予定
