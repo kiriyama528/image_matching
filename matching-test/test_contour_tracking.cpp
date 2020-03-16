@@ -3,14 +3,17 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+/*
 #include "distance_transform_image.h"
 #include "define.h"
 #include "image_process.h"
+*/
 
+#include "contour_tracking.h"
 
-TEST(UnitTestDistanceTransformImage, DTI) {
+TEST(UnitTestDistanceTransformImage, rasterScanForFirstValid) {
 	const int rows = 6, cols = 6;
-		
+
 	// エッジ画像として使う場合、1以外は0に置き換えて利用する
 	// [0]channel目に書き込む
 	unsigned char v[rows*cols] = {
@@ -33,13 +36,21 @@ TEST(UnitTestDistanceTransformImage, DTI) {
 			}
 		}
 	}
-	
-	cv::Mat actual;
-	makeDistanceTransformImage(actual, src); // making 今はスタブ状態
 
-	cv::Mat expected(rows, cols, CV_8UC1);
-	memcpy(expected.data, v, rows*cols);
+	contourTracking ct;
 
-	EXPECT_TRUE(isEqualMat(expected, actual));
+	// 座標(0,0)から
+	int act_r, act_c;
+	ct.rasterScanForFirstValid(act_r, act_c, src, 0, 0);
+
+	int exp_r = 0, exp_c = 1;
+	EXPECT_EQ(exp_r, act_r);
+	EXPECT_EQ(exp_c, act_c);
+
+	// 座標を途中から指定して
+	ct.rasterScanForFirstValid(act_r, act_c, src, 4, 1);
+
+	exp_r = 4, exp_c = 2;
+	EXPECT_EQ(exp_r, act_r);
+	EXPECT_EQ(exp_c, act_c);
 }
-

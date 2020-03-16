@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test_chamfer_matching.cpp" />
+    <ClCompile Include="test_contour_tracking.cpp" />
     <ClCompile Include="test_distance_transform_image.cpp" />
     <ClCompile Include="test_image_process.cpp" />
     <ClCompile Include="pch.cpp">

@@ -134,11 +134,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="contour_tracking.cpp" />
     <ClCompile Include="distance_transform_image.cpp" />
     <ClCompile Include="image_process.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="contour_tracking.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="distance_transform_image.h" />
     <ClInclude Include="image_process.h" />
