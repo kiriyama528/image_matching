@@ -4,7 +4,7 @@
 #include "image_process.h"
 #include "define.h"
 #include "distance_transform_image.h"
-#include "contour_tracking.h"
+//#include "contour_tracking.h"  // 必要になった時にコメントアウトを外す
 
 
 void makeDistanceTransformImage(cv::Mat &dst, const cv::Mat &src) {

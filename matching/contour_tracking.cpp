@@ -28,7 +28,25 @@ bool contourTracking::rasterScanForFirstValid(int & dst_r, int & dst_c, const cv
 }
 
 
-void contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, int start_col, bool is_8_neighborhood = true) {
+// とりあえずvoid
+// MEMO とりあえず8近傍の決め打ちで作る
+void contourTracking::recorsiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood) {
+
+	//serchValidPixAround(r, c, );
+
+	unsigned char img[5*5] = {
+		0, 0, 0, 0, 0,
+		0, 1, 1, 1, 0,
+		0, 1, 0, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 0, 0
+	};
+
+	memcpy(process.data, img, 5 * 5);
+}
+
+
+void contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, int start_col, bool is_8_neighborhood) {
 	UTYPE rows, cols, channels;
 	if (getImgInfo(bi_img, &rows, &cols, &channels) == false) {
 		fprintf(stderr, " > ERROR: 画像が読み込まれていません\n");
@@ -46,12 +64,8 @@ void contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, in
 	// making
 	// 侵入方向を示しつつ、周囲探索。
 	// 4近傍と8近傍で周囲の定義が違う
-	// MEMO とりあえず8近傍の決め打ちで作る
-	/*
-	recorsiveContourTracking(r, c, );
-
-	// とりあえずvoid
-	void recorsiveContourTracking(int r, int c, DIRECTION from, );
-	serchValidPixAround(r, c, );
-	*/
+	
+	cv::Mat process = cv::Mat::zeros(rows, cols, CV_8UC1);  // 追跡途中データを格納する行列
+	recorsiveContourTracking(bi_img, process, r, c, LEFT, is_8_neighborhood);
+	
 }
