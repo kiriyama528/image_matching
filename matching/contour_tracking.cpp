@@ -16,7 +16,9 @@ contourTracking::~contourTracking()
 
 
 contourTracking::DIRECTION contourTracking::reverseDirection(DIRECTION d) {
-	const DIRECTION src_dst[][2] = {
+	// MEMO ïsâ¬ÅB1Ç…Ç»ÇÈ Å® sizeof(DIRECTION) / sizeof(DEFAULT)
+	const int n_DIRECTION = 9;  // TODO .hÇ÷à⁄ìÆÇ≥ÇπÇÈÇ©Ç‡
+	const DIRECTION src_dst[n_DIRECTION][2] = {
 		{DEFAULT,    DEFAULT},
 		{UP_LEFT,    DOWN_RIGHT},
 		{UP,         DOWN},
@@ -28,7 +30,7 @@ contourTracking::DIRECTION contourTracking::reverseDirection(DIRECTION d) {
 		{DOWN_RIGHT, UP_LEFT}
 	};
 
-	for (int i = 0; i < sizeof(DIRECTION); i++) {
+	for (int i = 0; i < n_DIRECTION; i++) {
 		if (src_dst[i][0] == d) {
 			return src_dst[i][1];
 		}
@@ -54,6 +56,7 @@ bool contourTracking::rasterScanForFirstValid(int & dst_r, int & dst_c, const cv
 	return false;
 }
 
+// TODO Ç±ÇÃä÷êîÇÃèäëÆÇÇÕÇ¡Ç´ÇËÇ≥ÇπÇÈ
 bool validCoord(int r, int c, int img_rows, int img_cols) {
 	if (r < 0 && img_rows <= r) {
 		return false;

@@ -105,5 +105,22 @@ TEST_F(UnitTestDistanceTransformImage, recoursiveContourTracking_8) {
 }
 
 TEST_F(UnitTestDistanceTransformImage, reverseDirection) {
+	const int n_DIRECTION = 9;
+	contourTracking::DIRECTION inp_expected[n_DIRECTION][2] = {
+		{contourTracking::DEFAULT, contourTracking::DEFAULT},
+		{contourTracking::UP_LEFT, contourTracking::DOWN_RIGHT},
+		{contourTracking::UP, contourTracking::DOWN},
+		{contourTracking::UP_RIGHT, contourTracking::DOWN_LEFT},
+		{contourTracking::LEFT, contourTracking::RIGHT},
+		{contourTracking::RIGHT, contourTracking::LEFT},
+		{contourTracking::DOWN_LEFT, contourTracking::UP_RIGHT},
+		{contourTracking::DOWN, contourTracking::UP},
+		{contourTracking::DOWN_RIGHT, contourTracking::UP_LEFT}
+	};
 
+	contourTracking ct;
+	for (int i = 0; i < n_DIRECTION; i++) {
+		contourTracking::DIRECTION actual =ct.reverseDirection(inp_expected[i][0]);
+		EXPECT_EQ(inp_expected[i][1], actual);
+	}
 }
