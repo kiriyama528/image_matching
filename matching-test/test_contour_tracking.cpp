@@ -143,5 +143,96 @@ TEST_F(UnitTestDistanceTransformImage, directionToRC) {
 	memcpy(img.data, v, 7 * 7);
 
 	contourTracking ct;
+	int target_r, target_c;
+	int act_r, act_c;
+	int exp_r, exp_c;
+
+	// 左上端座標(0,0)に対して
+	target_r = 0, target_c = 0;
+	bool act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::DOWN_LEFT);
+	EXPECT_EQ(act_ret, false);
+
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::LEFT);
+	EXPECT_EQ(act_ret, false);
+
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::UP_LEFT);
+	EXPECT_EQ(act_ret, false);
+
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::UP);
+	EXPECT_EQ(act_ret, false);
+
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::UP_RIGHT);
+	EXPECT_EQ(act_ret, false);
+
+	exp_r = target_r, exp_c = target_c + 1;
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::RIGHT);
+	EXPECT_EQ(act_ret, true);
+	EXPECT_EQ(exp_r, act_r);
+	EXPECT_EQ(exp_c, act_c);
+
+	exp_r = 1, exp_c = 1;
+	exp_r = target_r + 1, exp_c = target_c + 1;
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::DOWN_RIGHT);
+	EXPECT_EQ(act_ret, true);
+	EXPECT_EQ(exp_r, act_r);
+	EXPECT_EQ(exp_c, act_c);
+
+	exp_r = target_r + 1, exp_c = target_c;
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::DOWN);
+	EXPECT_EQ(act_ret, true);
+	EXPECT_EQ(exp_r, act_r);
+	EXPECT_EQ(exp_c, act_c);
+
+	// 右下端座標(6,6)に対して
+	target_r = 6, target_c = 6;
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::UP_RIGHT);
+	EXPECT_EQ(act_ret, false);
+
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::RIGHT);
+	EXPECT_EQ(act_ret, false);
+
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::DOWN_RIGHT);
+	EXPECT_EQ(act_ret, false);
+
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::DOWN);
+	EXPECT_EQ(act_ret, false);
+
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::DOWN_LEFT);
+	EXPECT_EQ(act_ret, false);
+
+	exp_r = target_r, exp_c = target_c -1;
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::LEFT);
+	EXPECT_EQ(act_ret, true);
+	EXPECT_EQ(exp_r, act_r);
+	EXPECT_EQ(exp_c, act_c);
+
+	exp_r = target_r - 1, exp_c = target_c - 1;
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::UP_LEFT);
+	EXPECT_EQ(act_ret, true);
+	EXPECT_EQ(exp_r, act_r);
+	EXPECT_EQ(exp_c, act_c);
+
+	exp_r = target_r - 1, exp_c = target_c;
+	act_ret = ct.directionToRC(img, &act_r, &act_c, target_r, target_c,
+		contourTracking::UP);
+	EXPECT_EQ(act_ret, true);
+	EXPECT_EQ(exp_r, act_r);
+	EXPECT_EQ(exp_c, act_c);
+
 
 }

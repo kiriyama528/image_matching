@@ -56,6 +56,7 @@ bool contourTracking::rasterScanForFirstValid(int & dst_r, int & dst_c, const cv
 	return false;
 }
 
+
 // TODO ‚±‚ÌŠÖ”‚ÌŠ‘®‚ğ‚Í‚Á‚«‚è‚³‚¹‚é
 bool validCoord(int r, int c, int img_rows, int img_cols) {
 	if (r < 0 || img_rows <= r) {
@@ -109,8 +110,6 @@ bool contourTracking::directionToRC(const cv::Mat &img, int *dst_r, int *dst_c, 
 		break;
 	}
 
-	r = r + move_r;
-	c = c + move_c;
 	if (validCoord(r + move_r, c + move_c, img.rows, img.cols) == false) {
 		// ERROR
 		return false;
