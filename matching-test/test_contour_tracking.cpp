@@ -124,3 +124,24 @@ TEST_F(UnitTestDistanceTransformImage, reverseDirection) {
 		EXPECT_EQ(inp_expected[i][1], actual);
 	}
 }
+
+// 本当はこのテストフィクスチャではないが、簡単なので流用
+TEST_F(UnitTestDistanceTransformImage, validCoord) {
+	EXPECT_EQ(validCoord(-1, -1, 10, 20), false);
+	EXPECT_EQ(validCoord(-1, 0, 10, 20), false);
+	EXPECT_EQ(validCoord(0, -1, 10, 20), false);
+	EXPECT_EQ(validCoord(0, 0, 10, 20), true);
+	EXPECT_EQ(validCoord(9, 19, 10, 20), true);
+	EXPECT_EQ(validCoord(10, 19, 10, 20), false);
+	EXPECT_EQ(validCoord(9, 20, 10, 20), false);
+	EXPECT_EQ(validCoord(10, 20, 10, 20), false);
+}
+
+
+TEST_F(UnitTestDistanceTransformImage, directionToRC) {
+	cv::Mat img(7, 7, CV_8UC1);
+	memcpy(img.data, v, 7 * 7);
+
+	contourTracking ct;
+
+}

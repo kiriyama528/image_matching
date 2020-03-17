@@ -58,10 +58,10 @@ bool contourTracking::rasterScanForFirstValid(int & dst_r, int & dst_c, const cv
 
 // TODO ‚±‚ÌŠÖ”‚ÌŠ‘®‚ğ‚Í‚Á‚«‚è‚³‚¹‚é
 bool validCoord(int r, int c, int img_rows, int img_cols) {
-	if (r < 0 && img_rows <= r) {
+	if (r < 0 || img_rows <= r) {
 		return false;
 	}
-	if (c < 0 && img_cols <= r) {
+	if (c < 0 || img_cols <= c) {
 		return false;
 	}
 

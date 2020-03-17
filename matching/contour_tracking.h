@@ -69,3 +69,9 @@ public:
 	void run(cv::Mat & dst, const cv::Mat & bi_img, int start_row, int start_col, bool is_8_neighborhood = true);
 
 };
+
+/**
+ * @brief 座標(r, c) が有効範囲内か
+ * @return (true) 有効 / 範囲外 (false)
+ **/
+bool validCoord(int r, int c, int img_rows, int img_cols);
