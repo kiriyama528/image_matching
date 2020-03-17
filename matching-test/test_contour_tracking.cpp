@@ -103,3 +103,7 @@ TEST_F(UnitTestDistanceTransformImage, recoursiveContourTracking_8) {
 
 	EXPECT_TRUE(isEqualMat(process, expected));
 }
+
+TEST_F(UnitTestDistanceTransformImage, reverseDirection) {
+
+}

@@ -14,6 +14,33 @@ contourTracking::~contourTracking()
 {
 }
 
+
+contourTracking::DIRECTION contourTracking::reverseDirection(DIRECTION d) {
+	const DIRECTION src_dst[][2] = {
+		{DEFAULT,    DEFAULT},
+		{UP_LEFT,    DOWN_RIGHT},
+		{UP,         DOWN},
+		{UP_RIGHT,   DOWN_LEFT},
+		{LEFT,       RIGHT},
+		{RIGHT,      LEFT},
+		{DOWN_LEFT,  UP_RIGHT},
+		{DOWN,       UP},
+		{DOWN_RIGHT, UP_LEFT}
+	};
+
+	for (int i = 0; i < sizeof(DIRECTION); i++) {
+		if (src_dst[i][0] == d) {
+			return src_dst[i][1];
+		}
+	}
+	
+	// ERROR。ここにはたどりつかないはず
+	// たどり着くとすれば、DIRECTIONを拡張したのに、この関数をメンテしてないとき
+	// TODO ↓return を assertionに変更する
+	return DEFAULT;
+}
+
+
 bool contourTracking::rasterScanForFirstValid(int & dst_r, int & dst_c, const cv::Mat & bi_img, int start_row, int start_col)
 {
 	for (dst_r = start_row; dst_r < bi_img.rows; dst_r++) {
@@ -38,9 +65,9 @@ bool validCoord(int r, int c, int img_rows, int img_cols) {
 	return true;
 }
 
-// 方向先の画素値を取得する
-unsigned char contourTracking::getPixByDirection(const cv::Mat & bi_img, int r, int c, DIRECTION to) {
-	int move_r=0, move_c=0;
+
+bool contourTracking::directionToRC(const cv::Mat &img, int *dst_r, int *dst_c, int r, int c, DIRECTION to) {
+	int move_r = 0, move_c = 0;
 	switch (to) {
 	case UP_LEFT:
 		move_r = -1;
@@ -81,19 +108,34 @@ unsigned char contourTracking::getPixByDirection(const cv::Mat & bi_img, int r, 
 
 	r = r + move_r;
 	c = c + move_c;
-	if (validCoord(r, c, bi_img.rows, bi_img.cols) == false) {
+	if (validCoord(r + move_r, c + move_c, img.rows, img.cols) == false) {
 		// ERROR
-		return 0; // fix me
+		return false;
 	}
 
-	return at(bi_img, r, c, 0);
+	*dst_r = r + move_r;
+	*dst_c = c + move_c;
+	return true;
+}
+
+
+// 方向先の画素値を取得する
+// TODO エラー時のreturn 値を見直す
+unsigned char contourTracking::getPixByDirection(const cv::Mat & bi_img, int r, int c, DIRECTION to) {
+	int dst_r = 0, dst_c = 0;
+	if (directionToRC(bi_img, &dst_r, &dst_c, r, c, to) == false) {
+		// ERROR
+		return 0; // fix me 0でいいのか？本当に0の画素値が入っているときと見分けがつかない
+	}
+
+	return at(bi_img, dst_r, dst_c, 0);
 }
 
 
 // 周囲の 0 出ない画素を見つける
 // 一つ見つけたら終了
 // 進入方向から時計回りに探索する
-void contourTracking::searchValidPixAround(const cv::Mat &bi_img, int r, int c, DIRECTION from, bool is_8_neighborhood) {
+bool contourTracking::searchValidPixAround(DIRECTION * dst_to, const cv::Mat &bi_img, int r, int c, DIRECTION from, bool is_8_neighborhood) {
 	const DIRECTION around8_idx[] = { UP_LEFT, UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT};
 	const DIRECTION around4_idx[] = { UP, RIGHT, DOWN, LEFT };
 	
@@ -118,23 +160,41 @@ void contourTracking::searchValidPixAround(const cv::Mat &bi_img, int r, int c, 
 
 	if (start_idx = -1) {
 		// ERROR
-		return; // fix me 
+		return false;
 	}
 	
 	for (int i = 0; i < n_idx; i++) {
 		// リング状にアクセス
 		int idx = (start_idx + i) % n_idx;
 		unsigned char value = getPixByDirection(bi_img, r, c, around_idx[idx]);
+		if (value != 0) {
+			*dst_to = around_idx[idx];
+			return true;
+		}
 	}
 
+	return false;
 }
 
 
 // とりあえずvoid、8近傍決め打ち
 // TODO 4近傍にも分岐できるようにする
 void contourTracking::recorsiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood) {
-#if 0 // 本実装
-	serchValidPixAround(r, c, );
+	// 終了判定
+	if (at(process, r, c, 0) == from) {
+		return;
+	}
+	
+	at(process, r, c, 0) = unsigned char (from);
+
+#if 1 // 本実装
+	DIRECTION to = DEFAULT;
+	if (searchValidPixAround(&to, bi_img, r, c, from, is_8_neighborhood)) {
+		// 移動
+		int next_r, next_c;
+		directionToRC(bi_img, &next_r, &next_c, r, c, to);
+		return recorsiveContourTracking(bi_img, process, next_r, next_c, reverseDirection(to), is_8_neighborhood);
+	}
 
 #else // 仮のGREENコード
 	unsigned char img[5*5] = {
