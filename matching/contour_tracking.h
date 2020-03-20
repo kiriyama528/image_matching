@@ -21,6 +21,10 @@ public:
 
 	contourTracking();
 	~contourTracking();
+
+	// 追跡結果画像をエッジ画像に変換する
+	static void trackingResultToEdge(cv::Mat & dst_edge, const cv::Mat & src_tracking);
+	
 	// 与えられてた方向(d)を逆向きにする
 	DIRECTION reverseDirection(DIRECTION d);
 	
@@ -59,7 +63,7 @@ public:
 	void recorsiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood);
 
 	/**
-	 * @brief 輪郭追跡。時計回り
+	 * @brief 輪郭追跡。時計回り。この関数を呼び出すのが基本
 	 * @param dst <OUT> 追跡結果画像
 	 * @param bi_img <IN> 二値画像
 	 * @param start_row <IN> 探索開始row座標 (0~

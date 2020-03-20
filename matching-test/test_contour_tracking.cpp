@@ -25,7 +25,7 @@ protected:
 		0, 0, 0, 0, 0, 0, 0
 	};
 
-	void toEdge(cv::Mat &dst, const cv::Mat src) {
+	void toEdge(cv::Mat &dst, const cv::Mat &src) {
 		// エッジ画像を用意する
 		int rows = src.rows;
 		int cols = src.cols;
@@ -103,6 +103,7 @@ TEST_F(UnitTestDistanceTransformImage, recoursiveContourTracking_8) {
 
 	EXPECT_TRUE(isEqualMat(process, expected));
 }
+
 
 TEST_F(UnitTestDistanceTransformImage, reverseDirection) {
 	const int n_DIRECTION = 9;
@@ -233,6 +234,65 @@ TEST_F(UnitTestDistanceTransformImage, directionToRC) {
 	EXPECT_EQ(act_ret, true);
 	EXPECT_EQ(exp_r, act_r);
 	EXPECT_EQ(exp_c, act_c);
+}
 
 
+TEST_F(UnitTestDistanceTransformImage, trackingResultToEdge) {
+	const int rows = 5, cols = 5;
+	unsigned char src_data[rows*cols] = {
+		4,   0,   0,   0,  255,
+		0,   16,  32,  64, 0,
+		0,   8,   128, 1,  0,
+		0,   2,   1,   1,  0,
+		128, 0,   0,   0,  255
+	};
+
+	unsigned char exp_data[rows*cols] = {
+		1,   0,   0,   0,  1,
+		0,   1,   1,   1,  0,
+		0,   1,   1,   1,  0,
+		0,   1,   1,   1,  0,
+		1,   0,   0,   0,  1
+	};
+
+	cv::Mat tracking(rows, cols, CV_8UC1);
+	memcpy(tracking.data, src_data, rows * cols);
+	
+	cv::Mat actual;
+	contourTracking ct;
+	ct.trackingResultToEdge(actual, tracking);
+
+	cv::Mat expected(rows, cols, CV_8UC1);
+	memcpy(expected.data, exp_data, rows * cols);
+
+	EXPECT_TRUE(isEqualMat(actual, expected));
+}
+
+
+// 輪郭追跡(contourTrackingの呼び出しコア)
+TEST_F(UnitTestDistanceTransformImage, contourTrackingRun) {
+	const int rows = 5, cols = 5;
+	unsigned char img[rows*cols] = {
+		0, 0, 0, 0, 0,
+		0, 1, 1, 1, 0,
+		0, 1, 0, 1, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 0, 0, 0
+	};
+
+	cv::Mat edge;
+	toEdge(edge, img, rows, cols);
+	cv::Mat actual = cv::Mat::zeros(rows, cols, CV_8UC1);  // 追跡途中データを格納する行列
+	cv::Mat before = actual;
+	int s_r = 0, s_c = 0;  // スタート地点。どこでもいい。
+	contourTracking ct;
+	ct.run(actual, edge, s_r, s_c, true);
+	
+	// run()関数のエラー処理に引っかかってないか確認
+	EXPECT_FALSE(isEqualMat(actual, before));
+
+	cv::Mat expected = cv::Mat::zeros(rows, cols, CV_8UC1);
+	memcpy(expected.data, img, rows*cols);
+	
+	EXPECT_TRUE(isEqualMat(actual, expected));
 }

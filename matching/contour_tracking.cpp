@@ -15,6 +15,24 @@ contourTracking::~contourTracking()
 }
 
 
+void contourTracking::trackingResultToEdge(cv::Mat & dst_edge, const cv::Mat & src_tracking) {
+	int rows = src_tracking.rows;
+	int cols = src_tracking.cols;
+	dst_edge = cv::Mat::zeros(rows, cols, CV_8UC1);
+	unsigned char *dst_edge_data = dst_edge.data;
+	unsigned char *src_tracking_data = src_tracking.data;
+	for (int r = 0; r < rows; r++) {
+		for (int c = 0; c < rows; c++) {
+			int idx = r * cols + c; // channel数は1channelに決め打ち
+			if (src_tracking_data[idx] != DEFAULT) {
+				dst_edge_data[idx] = 1;
+			}
+		}
+	}
+
+}
+
+
 contourTracking::DIRECTION contourTracking::reverseDirection(DIRECTION d) {
 	// MEMO 不可。1になる → sizeof(DIRECTION) / sizeof(DEFAULT)
 	const int n_DIRECTION = 9;  // TODO .hへ移動させるかも
@@ -220,9 +238,8 @@ void contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, in
 		return;
 	}
 
-	// 最初の画素を見つけて(r,c)に格納する
-	int r = 0, c = 0;
-	if (rasterScanForFirstValid(r, c, bi_img, 0, 0) == false) {
+	// 最初のエッジ画素を見つけて(start_row, start_col)を更新する
+	if (rasterScanForFirstValid(start_row, start_col, bi_img, 0, 0) == false) {
 		fprintf(stderr, " > ERROR: 画素値が0出ない画素が存在しませんでした。\n");
 		return;
 	}
@@ -231,8 +248,9 @@ void contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, in
 	// making
 	// 侵入方向を示しつつ、周囲探索。
 	// 4近傍と8近傍で周囲の定義が違う
-	
+	// TODO 4近傍verの実装、フラグによる処理分岐	
 	cv::Mat process = cv::Mat::zeros(rows, cols, CV_8UC1);  // 追跡途中データを格納する行列
-	recorsiveContourTracking(bi_img, process, r, c, LEFT, is_8_neighborhood);
+	recorsiveContourTracking(bi_img, process, start_row, start_col, LEFT, is_8_neighborhood);
 	
+	trackingResultToEdge(dst, process);
 }
