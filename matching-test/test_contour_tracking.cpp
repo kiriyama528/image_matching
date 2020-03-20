@@ -296,3 +296,89 @@ TEST_F(UnitTestDistanceTransformImage, contourTrackingRun) {
 	
 	EXPECT_TRUE(isEqualMat(actual, expected));
 }
+
+
+TEST_F(UnitTestDistanceTransformImage, searchValidPixAround) {
+	const int rows = 5, cols = 5;
+	unsigned char img[rows*cols] = {
+		0, 0, 0, 0, 0,
+		0, 0, 1, 0, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 1, 1, 0,
+		0, 0, 0, 0, 0
+	};
+
+	cv::Mat edge;
+	toEdge(edge, img, rows, cols);
+
+	contourTracking ct;
+	// 連続探索を模してテスト
+	contourTracking::DIRECTION actual;
+	contourTracking::DIRECTION from = contourTracking::LEFT;
+	bool act_ret = ct.searchValidPixAround(&actual, edge, 2, 1
+		, from, true);
+	EXPECT_TRUE(act_ret);
+	contourTracking::DIRECTION expected = contourTracking::UP_RIGHT;
+	EXPECT_EQ(actual, expected);
+
+	from = ct.reverseDirection(expected);
+	act_ret = ct.searchValidPixAround(&actual, edge, 1, 2
+		, from, true);
+	EXPECT_TRUE(act_ret);
+	expected = contourTracking::DOWN_RIGHT;
+	EXPECT_EQ(actual, expected);
+
+	from = ct.reverseDirection(expected);
+	act_ret = ct.searchValidPixAround(&actual, edge, 2, 3
+		, from, true);
+	EXPECT_TRUE(act_ret);
+	expected = contourTracking::DOWN;
+	EXPECT_EQ(actual, expected);
+
+	from = ct.reverseDirection(expected);
+	act_ret = ct.searchValidPixAround(&actual, edge, 3, 3
+		, from, true);
+	EXPECT_TRUE(act_ret);
+	expected = contourTracking::UP_RIGHT;
+	EXPECT_EQ(actual, expected);
+
+	from = ct.reverseDirection(expected);
+	act_ret = ct.searchValidPixAround(&actual, edge, 3, 2
+		, from, true);
+	EXPECT_TRUE(act_ret);
+	expected = contourTracking::UP_LEFT;
+	EXPECT_EQ(actual, expected);
+
+	from = ct.reverseDirection(expected);
+	act_ret = ct.searchValidPixAround(&actual, edge, 2, 1
+		, from, true);
+	EXPECT_TRUE(act_ret);
+	expected = contourTracking::UP_RIGHT;
+	EXPECT_EQ(actual, expected);
+
+	// 単体チェック。座標(2, 2)に対して全方向から進入
+	contourTracking::DIRECTION from_exp[8][2] = {
+		contourTracking::LEFT,       contourTracking::UP,
+		contourTracking::UP_LEFT,    contourTracking::UP,
+		contourTracking::UP,         contourTracking::RIGHT,
+		contourTracking::UP_RIGHT,   contourTracking::RIGHT,
+		contourTracking::RIGHT,      contourTracking::DOWN_LEFT,
+		contourTracking::DOWN_RIGHT, contourTracking::DOWN,
+		contourTracking::DOWN,       contourTracking::LEFT,
+		contourTracking::DOWN_LEFT,  contourTracking::LEFT,
+	};
+
+	for (int i = 0; i < 8; i++) {
+		act_ret = ct.searchValidPixAround(&actual, edge, 2, 2
+			, from_exp[i][0], true);
+		EXPECT_TRUE(act_ret);
+		EXPECT_EQ(actual, from_exp[i][1]);
+	}
+	
+	// エラーチェック。周囲に何も有効画素がない場合
+	// 座標(0,4)
+	from = contourTracking::LEFT;
+	act_ret = ct.searchValidPixAround(&actual, edge, 0, 4
+		, from, true);
+	EXPECT_FALSE(act_ret);
+}
