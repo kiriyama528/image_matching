@@ -60,7 +60,7 @@ public:
 	 *
 	 *
 	 **/
-	void recorsiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood);
+	void recursiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood);
 
 	/**
 	 * @brief 輪郭追跡。時計回り。この関数を呼び出すのが基本

@@ -199,7 +199,7 @@ bool contourTracking::searchValidPixAround(DIRECTION * dst_to, const cv::Mat &bi
 
 // とりあえずvoid、8近傍決め打ち
 // TODO 4近傍にも分岐できるようにする
-void contourTracking::recorsiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood) {
+void contourTracking::recursiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood) {
 	// 終了判定
 	if (at(process, r, c, 0) == from) {
 		return;
@@ -213,7 +213,7 @@ void contourTracking::recorsiveContourTracking(const cv::Mat & bi_img, cv::Mat &
 		// 移動
 		int next_r, next_c;
 		directionToRC(bi_img, &next_r, &next_c, r, c, to);
-		return recorsiveContourTracking(bi_img, process, next_r, next_c, reverseDirection(to), is_8_neighborhood);
+		return recursiveContourTracking(bi_img, process, next_r, next_c, reverseDirection(to), is_8_neighborhood);
 	}
 
 #else // 仮のGREENコード
@@ -250,7 +250,7 @@ void contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, in
 	// 4近傍と8近傍で周囲の定義が違う
 	// TODO 4近傍verの実装、フラグによる処理分岐	
 	cv::Mat process = cv::Mat::zeros(rows, cols, CV_8UC1);  // 追跡途中データを格納する行列
-	recorsiveContourTracking(bi_img, process, start_row, start_col, LEFT, is_8_neighborhood);
+	recursiveContourTracking(bi_img, process, start_row, start_col, LEFT, is_8_neighborhood);
 	
 	trackingResultToEdge(dst, process);
 }

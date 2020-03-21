@@ -81,7 +81,7 @@ TEST_F(UnitTestDistanceTransformImage, rasterScanForFirstValid) {
 }
 
 
-TEST_F(UnitTestDistanceTransformImage, recoursiveContourTracking_8) {
+TEST_F(UnitTestDistanceTransformImage, recursiveContourTracking_8) {
 	const int rows = 5, cols = 5;
 	unsigned char img[rows*cols] = {
 		0, 0, 0, 0, 0,
@@ -91,15 +91,23 @@ TEST_F(UnitTestDistanceTransformImage, recoursiveContourTracking_8) {
 		0, 0, 0, 0, 0
 	};
 
+	unsigned char exp_data[rows*cols] = {
+		0,  0,  0,  0,  0,
+		0, 64,  8,  8,  0,
+		0, 64,  0,  2,  0,
+		0, 16, 16,  2,  0,
+		0,  0,  0,  0,  0
+	};
+
 	cv::Mat edge;
 	toEdge(edge, img, rows, cols);
 	cv::Mat process = cv::Mat::zeros(rows, cols, CV_8UC1);  // 追跡途中データを格納する行列
 	int s_r = 1, s_c = 1;  // 0でない画素の座標。スタート地点となる。画像を変更したら、こちらも変更すること
 	contourTracking ct;
-	ct.recorsiveContourTracking(edge, process, s_r, s_c, contourTracking::LEFT, true);
+	ct.recursiveContourTracking(edge, process, s_r, s_c, contourTracking::LEFT, true);
 
 	cv::Mat expected = cv::Mat::zeros(rows, cols, CV_8UC1);
-	memcpy(expected.data, img, rows*cols);
+	memcpy(expected.data, exp_data, rows*cols);
 
 	EXPECT_TRUE(isEqualMat(process, expected));
 }
