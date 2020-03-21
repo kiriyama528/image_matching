@@ -66,15 +66,15 @@ TEST_F(UnitTestDistanceTransformImage, rasterScanForFirstValid) {
 	// 座標(0,0)から
 	contourTracking ct;
 	int act_r, act_c;
-	ct.rasterScanForFirstValid(act_r, act_c, edge, 0, 0);
-
+	bool act_ret = ct.rasterScanForFirstValid(act_r, act_c, edge, 0, 0);
+	EXPECT_TRUE(act_ret);
 	int exp_r = 1, exp_c = 1;
 	EXPECT_EQ(exp_r, act_r);
 	EXPECT_EQ(exp_c, act_c);
 
 	// 座標を途中から指定して
-	ct.rasterScanForFirstValid(act_r, act_c, edge, 5, 1);
-
+	act_ret = ct.rasterScanForFirstValid(act_r, act_c, edge, 5, 1);
+	EXPECT_TRUE(act_ret);
 	exp_r = 5, exp_c = 2;
 	EXPECT_EQ(exp_r, act_r);
 	EXPECT_EQ(exp_c, act_c);
@@ -290,18 +290,39 @@ TEST_F(UnitTestDistanceTransformImage, contourTrackingRun) {
 
 	cv::Mat edge;
 	toEdge(edge, img, rows, cols);
-	cv::Mat actual = cv::Mat::zeros(rows, cols, CV_8UC1);  // 追跡途中データを格納する行列
-	cv::Mat before = actual;
+	cv::Mat actual;
 	int s_r = 0, s_c = 0;  // スタート地点。どこでもいい。
 	contourTracking ct;
-	ct.run(actual, edge, s_r, s_c, true);
+	bool act_ret = ct.run(actual, edge, s_r, s_c, true);
 	
 	// run()関数のエラー処理に引っかかってないか確認
-	EXPECT_FALSE(isEqualMat(actual, before));
+	EXPECT_TRUE(act_ret);
 
 	cv::Mat expected = cv::Mat::zeros(rows, cols, CV_8UC1);
 	memcpy(expected.data, img, rows*cols);
 	
+	EXPECT_TRUE(isEqualMat(actual, expected));
+}
+
+
+// 輪郭追跡(contourTrackingの呼び出しコア)。複雑な入力例
+TEST_F(UnitTestDistanceTransformImage, contourTrackingRun_2) {
+	const int rows = 7, cols = 7;
+	
+	cv::Mat img(rows, cols, CV_8UC1);
+	memcpy(img.data, v, 7 * 7);
+	
+	cv::Mat actual;
+	int s_r = 0, s_c = 0;  // スタート地点。どこでもいい。
+	contourTracking ct;
+	bool act_ret = ct.run(actual, img, s_r, s_c, true);
+
+	// run()関数のエラー処理に引っかかってないか確認
+	EXPECT_TRUE(act_ret);
+
+	cv::Mat expected;
+	toEdge(expected, v, rows, cols);
+
 	EXPECT_TRUE(isEqualMat(actual, expected));
 }
 

@@ -69,8 +69,9 @@ public:
 	 * @param start_row <IN> ’TõŠJnrowÀ•W (0~
 	 * @param start_col <IN> ’TõŠJncolÀ•W (0~
 	 * @param is_8_neighborhood 8‹ß–T’Tõ‚©‚Ç‚¤‚©
+	 * @return (true) ¬Œ÷ / ¸”s (false)
 	 **/
-	void run(cv::Mat & dst, const cv::Mat & bi_img, int start_row, int start_col, bool is_8_neighborhood = true);
+	bool run(cv::Mat & dst, const cv::Mat & bi_img, int start_row, int start_col, bool is_8_neighborhood = true);
 
 };
 

@@ -231,17 +231,17 @@ void contourTracking::recursiveContourTracking(const cv::Mat & bi_img, cv::Mat &
 }
 
 
-void contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, int start_col, bool is_8_neighborhood) {
+bool contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, int start_col, bool is_8_neighborhood) {
 	UTYPE rows, cols, channels;
 	if (getImgInfo(bi_img, &rows, &cols, &channels) == false) {
 		fprintf(stderr, " > ERROR: 画像が読み込まれていません\n");
-		return;
+		return false;
 	}
 
 	// 最初のエッジ画素を見つけて(start_row, start_col)を更新する
 	if (rasterScanForFirstValid(start_row, start_col, bi_img, 0, 0) == false) {
-		fprintf(stderr, " > ERROR: 画素値が0出ない画素が存在しませんでした。\n");
-		return;
+		fprintf(stderr, " > ERROR: 画素値が0でない画素が存在しませんでした。\n");
+		return false;
 	}
 
 
@@ -251,6 +251,6 @@ void contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, in
 	// TODO 4近傍verの実装、フラグによる処理分岐	
 	cv::Mat process = cv::Mat::zeros(rows, cols, CV_8UC1);  // 追跡途中データを格納する行列
 	recursiveContourTracking(bi_img, process, start_row, start_col, LEFT, is_8_neighborhood);
-	
 	trackingResultToEdge(dst, process);
+	return true;
 }
