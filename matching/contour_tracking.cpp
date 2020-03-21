@@ -201,7 +201,7 @@ bool contourTracking::searchValidPixAround(DIRECTION * dst_to, const cv::Mat &bi
 // TODO 4‹ß–T‚É‚à•ªŠò‚Å‚«‚é‚æ‚¤‚É‚·‚é
 void contourTracking::recursiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood) {
 	// I—¹”»’è
-	if (at(process, r, c, 0) == from) {
+	if ( (at(process, r, c, 0) & from) == from) {
 		return;
 	}
 	
