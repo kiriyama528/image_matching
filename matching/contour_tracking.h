@@ -6,17 +6,17 @@
 
 class contourTracking {
 public:
-	// 0bXXXXX å`éÆÇ≈èëÇØ
+	// 8bit(uchar)Ç≈ä«óùÇ≈Ç´ÇÈÇÊÇ§Ç»å`éÆ
 	typedef enum {
-		DEFAULT = 0,
-		UP_LEFT = 1,
-		UP = 2,
-		UP_RIGHT = 4,
-		LEFT = 8,
-		RIGHT = 16,
-		DOWN_LEFT = 32,
-		DOWN = 64,
-		DOWN_RIGHT = 128
+		DEFAULT    = 0b00000000,
+		UP_LEFT    = 0b00000001,
+		UP         = 0b00000010,
+		UP_RIGHT   = 0b00000100,
+		LEFT       = 0b00001000,
+		RIGHT      = 0b00010000,
+		DOWN_LEFT  = 0b00100000,
+		DOWN       = 0b01000000,
+		DOWN_RIGHT = 0b10000000
 	} DIRECTION;
 
 	contourTracking();
