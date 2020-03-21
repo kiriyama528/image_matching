@@ -172,26 +172,18 @@ bool contourTracking::searchValidPixAround(DIRECTION * dst_to, const cv::Mat &bi
 	
 	int start_idx = -1;
 	for (int i = 0; i < n_idx; i++) {
-#if 1 // debug
-		DIRECTION tmp = around_idx[i];
-		if (tmp == from) {
+		if (around_idx[i] == from) {
 			start_idx = i;
-			//break;
+			break;
 		}
-#else
-		if (around_idx[i] == from && start_idx == -1) {
-			start_idx = i;
-			//break;
-		}
-#endif
 	}
 
-	if (start_idx = -1) {
+	if (start_idx == -1) {
 		// ERROR
 		return false;
 	}
 	
-	for (int i = 0; i < n_idx; i++) {
+	for (int i = 1; i < n_idx; i++) {
 		// リング状にアクセス
 		int idx = (start_idx + i) % n_idx;
 		unsigned char value = getPixByDirection(bi_img, r, c, around_idx[idx]);

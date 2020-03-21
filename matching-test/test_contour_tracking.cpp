@@ -339,7 +339,7 @@ TEST_F(UnitTestDistanceTransformImage, searchValidPixAround) {
 	act_ret = ct.searchValidPixAround(&actual, edge, 3, 3
 		, from, true);
 	EXPECT_TRUE(act_ret);
-	expected = contourTracking::UP_RIGHT;
+	expected = contourTracking::LEFT;
 	EXPECT_EQ(actual, expected);
 
 	from = ct.reverseDirection(expected);
@@ -362,7 +362,7 @@ TEST_F(UnitTestDistanceTransformImage, searchValidPixAround) {
 		contourTracking::UP_LEFT,    contourTracking::UP,
 		contourTracking::UP,         contourTracking::RIGHT,
 		contourTracking::UP_RIGHT,   contourTracking::RIGHT,
-		contourTracking::RIGHT,      contourTracking::DOWN_LEFT,
+		contourTracking::RIGHT,      contourTracking::DOWN_RIGHT,
 		contourTracking::DOWN_RIGHT, contourTracking::DOWN,
 		contourTracking::DOWN,       contourTracking::LEFT,
 		contourTracking::DOWN_LEFT,  contourTracking::LEFT,
@@ -383,28 +383,3 @@ TEST_F(UnitTestDistanceTransformImage, searchValidPixAround) {
 	EXPECT_FALSE(act_ret);
 }
 
-
-
-TEST_F(UnitTestDistanceTransformImage, searchValidPixAround_simple) {
-	const int rows = 5, cols = 5;
-	unsigned char img[rows*cols] = {
-		0, 0, 0, 0, 0,
-		0, 0, 1, 0, 0,
-		0, 1, 1, 1, 0,
-		0, 0, 1, 1, 0,
-		0, 0, 0, 0, 0
-	};
-
-	cv::Mat edge;
-	toEdge(edge, img, rows, cols);
-
-	contourTracking ct;
-	// 連続探索を模してテスト
-	contourTracking::DIRECTION actual;
-	contourTracking::DIRECTION from = contourTracking::RIGHT;
-	bool act_ret = ct.searchValidPixAround(&actual, edge, 1, 2
-		, from, true);
-	EXPECT_TRUE(act_ret);
-	contourTracking::DIRECTION expected = contourTracking::DOWN_RIGHT;
-	EXPECT_EQ(actual, expected);
-}
