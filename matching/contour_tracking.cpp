@@ -156,10 +156,10 @@ unsigned char contourTracking::getPixByDirection(const cv::Mat & bi_img, int r, 
 // àÍÇ¬å©Ç¬ÇØÇΩÇÁèIóπ
 // êiì¸ï˚å¸Ç©ÇÁéûåvâÒÇËÇ…íTçıÇ∑ÇÈ
 bool contourTracking::searchValidPixAround(DIRECTION * dst_to, const cv::Mat &bi_img, int r, int c, DIRECTION from, bool is_8_neighborhood) {
-	const DIRECTION around8_idx[] = { UP_LEFT, UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT};
-	const DIRECTION around4_idx[] = { UP, RIGHT, DOWN, LEFT };
+	DIRECTION around8_idx[8] = { UP_LEFT, UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT};
+	DIRECTION around4_idx[4] = { UP, RIGHT, DOWN, LEFT };
 	
-	const DIRECTION *around_idx;
+	DIRECTION *around_idx;
 	int n_idx;
 	if (is_8_neighborhood) {
 		around_idx = around8_idx;
@@ -172,10 +172,18 @@ bool contourTracking::searchValidPixAround(DIRECTION * dst_to, const cv::Mat &bi
 	
 	int start_idx = -1;
 	for (int i = 0; i < n_idx; i++) {
-		if (around_idx[i] == from) {
+#if 1 // debug
+		DIRECTION tmp = around_idx[i];
+		if (tmp == from) {
 			start_idx = i;
-			break;
+			//break;
 		}
+#else
+		if (around_idx[i] == from && start_idx == -1) {
+			start_idx = i;
+			//break;
+		}
+#endif
 	}
 
 	if (start_idx = -1) {

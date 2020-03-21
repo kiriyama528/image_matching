@@ -382,3 +382,29 @@ TEST_F(UnitTestDistanceTransformImage, searchValidPixAround) {
 		, from, true);
 	EXPECT_FALSE(act_ret);
 }
+
+
+
+TEST_F(UnitTestDistanceTransformImage, searchValidPixAround_simple) {
+	const int rows = 5, cols = 5;
+	unsigned char img[rows*cols] = {
+		0, 0, 0, 0, 0,
+		0, 0, 1, 0, 0,
+		0, 1, 1, 1, 0,
+		0, 0, 1, 1, 0,
+		0, 0, 0, 0, 0
+	};
+
+	cv::Mat edge;
+	toEdge(edge, img, rows, cols);
+
+	contourTracking ct;
+	// 連続探索を模してテスト
+	contourTracking::DIRECTION actual;
+	contourTracking::DIRECTION from = contourTracking::RIGHT;
+	bool act_ret = ct.searchValidPixAround(&actual, edge, 1, 2
+		, from, true);
+	EXPECT_TRUE(act_ret);
+	contourTracking::DIRECTION expected = contourTracking::DOWN_RIGHT;
+	EXPECT_EQ(actual, expected);
+}
