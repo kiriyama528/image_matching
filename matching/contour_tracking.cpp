@@ -207,27 +207,16 @@ void contourTracking::recursiveContourTracking(const cv::Mat & bi_img, cv::Mat &
 	
 	at(process, r, c, 0) = unsigned char (from);
 
-#if 1 // 本実装
 	DIRECTION to = DEFAULT;
 	if (searchValidPixAround(&to, bi_img, r, c, from, is_8_neighborhood)) {
 		// 移動
 		int next_r, next_c;
 		directionToRC(bi_img, &next_r, &next_c, r, c, to);
-		return recursiveContourTracking(bi_img, process, next_r, next_c, reverseDirection(to), is_8_neighborhood);
+		recursiveContourTracking(bi_img, process, next_r, next_c, reverseDirection(to), is_8_neighborhood);
 	}
 
-#else // 仮のGREENコード
-	unsigned char img[5*5] = {
-		0, 0, 0, 0, 0,
-		0, 1, 1, 1, 0,
-		0, 1, 0, 1, 0,
-		0, 1, 1, 1, 0,
-		0, 0, 0, 0, 0
-	};
-
-	memcpy(process.data, img, 5 * 5);
-	
-#endif
+	// 末端へ到達したので終了。折り返さない
+	return;
 }
 
 
