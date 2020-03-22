@@ -3,15 +3,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-/*
-#include "distance_transform_image.h"
-#include "define.h"
-#include "image_process.h"
-*/
-
 #include "contour_tracking.h"
 
-class UnitTestDistanceTransformImage : public ::testing::Test {
+class UnitTestContourTracking : public ::testing::Test {
 protected:
 	// エッジ画像として使う場合、1以外は0に置き換えて利用する
 	// [0]channel目に書き込む
@@ -59,7 +53,7 @@ protected:
 };
 
 
-TEST_F(UnitTestDistanceTransformImage, rasterScanForFirstValid) {
+TEST_F(UnitTestContourTracking, rasterScanForFirstValid) {
 	cv::Mat edge;
 	toEdge(edge, v, 7, 7);
 
@@ -81,7 +75,7 @@ TEST_F(UnitTestDistanceTransformImage, rasterScanForFirstValid) {
 }
 
 
-TEST_F(UnitTestDistanceTransformImage, recursiveContourTracking_8) {
+TEST_F(UnitTestContourTracking, recursiveContourTracking_8) {
 	const int rows = 5, cols = 5;
 	unsigned char img[rows*cols] = {
 		0, 0, 0, 0, 0,
@@ -113,7 +107,7 @@ TEST_F(UnitTestDistanceTransformImage, recursiveContourTracking_8) {
 }
 
 
-TEST_F(UnitTestDistanceTransformImage, reverseDirection) {
+TEST_F(UnitTestContourTracking, reverseDirection) {
 	const int n_DIRECTION = 9;
 	contourTracking::DIRECTION inp_expected[n_DIRECTION][2] = {
 		{contourTracking::DEFAULT, contourTracking::DEFAULT},
@@ -135,7 +129,7 @@ TEST_F(UnitTestDistanceTransformImage, reverseDirection) {
 }
 
 // 本当はこのテストフィクスチャではないが、簡単なので流用
-TEST_F(UnitTestDistanceTransformImage, validCoord) {
+TEST_F(UnitTestContourTracking, validCoord) {
 	EXPECT_EQ(validCoord(-1, -1, 10, 20), false);
 	EXPECT_EQ(validCoord(-1, 0, 10, 20), false);
 	EXPECT_EQ(validCoord(0, -1, 10, 20), false);
@@ -147,7 +141,7 @@ TEST_F(UnitTestDistanceTransformImage, validCoord) {
 }
 
 
-TEST_F(UnitTestDistanceTransformImage, directionToRC) {
+TEST_F(UnitTestContourTracking, directionToRC) {
 	cv::Mat img(7, 7, CV_8UC1);
 	memcpy(img.data, v, 7 * 7);
 
@@ -245,7 +239,7 @@ TEST_F(UnitTestDistanceTransformImage, directionToRC) {
 }
 
 
-TEST_F(UnitTestDistanceTransformImage, trackingResultToEdge) {
+TEST_F(UnitTestContourTracking, trackingResultToEdge) {
 	const int rows = 5, cols = 5;
 	unsigned char src_data[rows*cols] = {
 		4,   0,   0,   0,  255,
@@ -278,7 +272,7 @@ TEST_F(UnitTestDistanceTransformImage, trackingResultToEdge) {
 
 
 // 輪郭追跡(contourTrackingの呼び出しコア)
-TEST_F(UnitTestDistanceTransformImage, contourTrackingRun) {
+TEST_F(UnitTestContourTracking, contourTrackingRun) {
 	const int rows = 5, cols = 5;
 	unsigned char img[rows*cols] = {
 		0, 0, 0, 0, 0,
@@ -306,7 +300,7 @@ TEST_F(UnitTestDistanceTransformImage, contourTrackingRun) {
 
 
 // 輪郭追跡(contourTrackingの呼び出しコア)。複雑な入力例
-TEST_F(UnitTestDistanceTransformImage, contourTrackingRun_2) {
+TEST_F(UnitTestContourTracking, contourTrackingRun_2) {
 	const int rows = 7, cols = 7;
 	
 	cv::Mat img(rows, cols, CV_8UC1);
@@ -328,7 +322,7 @@ TEST_F(UnitTestDistanceTransformImage, contourTrackingRun_2) {
 
 
 // 輪郭追跡(contourTrackingの呼び出しコア)。複雑な入力例。4近傍探索モード
-TEST_F(UnitTestDistanceTransformImage, contourTrackingRun_4neighborhood) {
+TEST_F(UnitTestContourTracking, contourTrackingRun_4neighborhood) {
 	const int rows = 7, cols = 7;
 
 	unsigned char img_data[rows * cols] = {
@@ -361,7 +355,7 @@ TEST_F(UnitTestDistanceTransformImage, contourTrackingRun_4neighborhood) {
 
 
 
-TEST_F(UnitTestDistanceTransformImage, searchValidPixAround) {
+TEST_F(UnitTestContourTracking, searchValidPixAround) {
 	const int rows = 5, cols = 5;
 	unsigned char img[rows*cols] = {
 		0, 0, 0, 0, 0,

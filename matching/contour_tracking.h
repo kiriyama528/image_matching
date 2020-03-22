@@ -93,7 +93,7 @@ public:
 
 	/**
 	 * @brief 輪郭追跡。時計回り。この関数を呼び出すのが基本
-	 * @param dst <OUT> 追跡結果画像
+	 * @param dst <OUT> 追跡結果画像。初期化してなくてよい。
 	 * @param bi_img <IN> 二値画像(CV_8UC1)
 	 * @param start_row <IN> 探索開始row座標 (0~
 	 * @param start_col <IN> 探索開始col座標 (0~
