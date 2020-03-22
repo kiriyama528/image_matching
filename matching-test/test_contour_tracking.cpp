@@ -327,6 +327,40 @@ TEST_F(UnitTestDistanceTransformImage, contourTrackingRun_2) {
 }
 
 
+// 輪郭追跡(contourTrackingの呼び出しコア)。複雑な入力例。4近傍探索モード
+TEST_F(UnitTestDistanceTransformImage, contourTrackingRun_4neighborhood) {
+	const int rows = 7, cols = 7;
+
+	unsigned char img_data[rows * cols] = {
+		0, 0, 0, 0, 0, 0, 0,
+		0, 1, 1, 1, 1, 1, 0,
+		1, 1, 0, 0, 0, 1, 0,
+		0, 1, 0, 0, 0, 1, 0,
+		0, 1, 1, 0, 1, 1, 0,
+		0, 0, 1, 1, 1, 0, 0,
+		0, 0, 0, 0, 0, 0, 0
+	};
+
+	cv::Mat img(rows, cols, CV_8UC1);
+	memcpy(img.data, img_data, rows * cols);
+
+	cv::Mat actual;
+	int s_r = 0, s_c = 0;  // スタート地点。どこでもいい。
+	contourTracking ct;
+	bool act_ret = ct.run(actual, img, s_r, s_c, false);
+
+	// run()関数のエラー処理に引っかかってないか確認
+	EXPECT_TRUE(act_ret);
+
+	cv::Mat expected(rows, cols, CV_8UC1);
+	memcpy(expected.data, img_data, rows*cols);
+
+	EXPECT_TRUE(isEqualMat(actual, expected));
+}
+
+
+
+
 TEST_F(UnitTestDistanceTransformImage, searchValidPixAround) {
 	const int rows = 5, cols = 5;
 	unsigned char img[rows*cols] = {
@@ -411,4 +445,5 @@ TEST_F(UnitTestDistanceTransformImage, searchValidPixAround) {
 		, from, true);
 	EXPECT_FALSE(act_ret);
 }
+
 

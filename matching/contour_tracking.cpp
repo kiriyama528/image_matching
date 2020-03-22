@@ -152,9 +152,6 @@ unsigned char contourTracking::getPixByDirection(const cv::Mat & bi_img, int r, 
 }
 
 
-// 周囲の 0 出ない画素を見つける
-// 一つ見つけたら終了
-// 進入方向から時計回りに探索する
 bool contourTracking::searchValidPixAround(DIRECTION * dst_to, const cv::Mat &bi_img, int r, int c, DIRECTION from, bool is_8_neighborhood) {
 	DIRECTION around8_idx[8] = { UP_LEFT, UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT};
 	DIRECTION around4_idx[4] = { UP, RIGHT, DOWN, LEFT };
@@ -197,8 +194,6 @@ bool contourTracking::searchValidPixAround(DIRECTION * dst_to, const cv::Mat &bi
 }
 
 
-// とりあえずvoid、8近傍決め打ち
-// TODO 4近傍にも分岐できるようにする
 void contourTracking::recursiveContourTracking(const cv::Mat & bi_img, cv::Mat & process, int r, int c, DIRECTION from, bool is_8_neighborhood) {
 	// 終了判定
 	if ( (at(process, r, c, 0) & from) == from) {
@@ -215,7 +210,7 @@ void contourTracking::recursiveContourTracking(const cv::Mat & bi_img, cv::Mat &
 		recursiveContourTracking(bi_img, process, next_r, next_c, reverseDirection(to), is_8_neighborhood);
 	}
 
-	// 末端へ到達したので終了。折り返さない
+	// 末端へ到達したので終了。捜査してきた道を折り返さない
 	return;
 }
 
@@ -233,11 +228,7 @@ bool contourTracking::run(cv::Mat &dst, const cv::Mat &bi_img, int start_row, in
 		return false;
 	}
 
-
-	// making
-	// 侵入方向を示しつつ、周囲探索。
-	// 4近傍と8近傍で周囲の定義が違う
-	// TODO 4近傍verの実装、フラグによる処理分岐	
+	// 追跡処理と結果画像への変換
 	cv::Mat process = cv::Mat::zeros(rows, cols, CV_8UC1);  // 追跡途中データを格納する行列
 	recursiveContourTracking(bi_img, process, start_row, start_col, LEFT, is_8_neighborhood);
 	trackingResultToEdge(dst, process);
