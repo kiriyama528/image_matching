@@ -11,7 +11,7 @@ int XXX() { return 0; }
 // 画像を開けるか
 //  画像のパスが正しいか
 TEST(UnitTestInputImage, validPath){
-	const char *imgname = "C:\\Users\\kiriyama\\Pictures\\digital_image_processing\\template.jpg";
+	const char *imgname = "../../lena.jpg";
 	bool expected = true;
 	cv::Mat img;
 	bool actual = readImage(imgname, img);
@@ -23,13 +23,13 @@ TEST(UnitTestInputImage, validPath){
 //  rows, cols, channels
 TEST(UnitTestInputImage, correctInfo) {
 	// 画像の読み込み
-	const char *imgname = "C:\\Users\\kiriyama\\Pictures\\digital_image_processing\\template.jpg";
+	const char *imgname = "../../lena.jpg";
 	cv::Mat img;
 	readImage(imgname, img);
 
-	int expected_rows = 2276;
-	int expected_cols = 1591;
-	int expected_channels = 3;
+	const int expected_rows = 512;
+	const int expected_cols = 512;
+	const int expected_channels = 3;
 
 	int act_rows, act_cols, act_channels;
 	getImgInfo(img, &act_rows, &act_cols, &act_channels);
@@ -42,7 +42,7 @@ TEST(UnitTestInputImage, correctInfo) {
 // 狙い通りの画素（チャンネル）にアクセスできるか
 TEST(UnitTestInputImage, accessPixel) {
 	// 画像の読み込み
-	const char *imgname = "C:\\Users\\kiriyama\\Pictures\\digital_image_processing\\template.jpg";
+	const char *imgname = "../../lena.jpg";
 	cv::Mat img;
 	readImage(imgname, img);
 	
